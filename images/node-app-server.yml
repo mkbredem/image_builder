@@ -1,0 +1,10 @@
+app_name: node-app-server
+app_description: Sample image for the node.js application server
+version: "0.0.1"
+modules: default(omit)
+groups: default(omit)
+packages:
+  - name: "nodejs"
+    version: "*"
+  - name: "nginx"
+    version: "*"

@@ -1,0 +1,32 @@
+---
+# based on: https://www.redhat.com/en/interactive-labs/build-machine-images-command-line-tools-image-builder
+- name: Setup Node App Server Environment
+  hosts: "{{ target_hosts }}" # represents some rhel8 or rhel9 server intended to run composer-cli and osbuild-composer
+  var_files:
+    - images/"{{ image_name }}.yml" # image_name is an extra var passed by -e or survey field from job template
+  become: yes
+
+  pre_tasks:
+    - name: Install required packages
+      dnf:
+        name:
+          - composer-cli
+          - osbuild-composer
+        state: present
+
+    - name: Enable and start osbuild-composer.socket
+      systemd:
+        name: osbuild-composer.socket
+        state: started
+        enabled: yes
+
+  tasks:
+    - name: Create node app server template file
+      template:
+        src: image.toml.j2"
+        dest: /etc/osbuild-composer/{{ image_name }}.toml
+
+    - name: Start composer-cli compose
+      command: composer-cli compose start {{ image_name }} qcow2
+      args:
+        creates: /path/to/check/if/compose/started/correctly

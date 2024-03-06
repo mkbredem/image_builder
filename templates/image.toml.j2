@@ -1,0 +1,11 @@
+name = "{{ app_name }}"
+description = "{{ app_description }}"
+version = "{{ version }}"
+modules = {{ modules | default([]) }}
+groups = {{ groups | default([]) }}
+
+{% for package in packages %}
+[[packages]]
+name = "{{ package.name }}"
+version = "{{ package.version }}"
+{% endfor %}
